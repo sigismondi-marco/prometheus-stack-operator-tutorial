@@ -1,0 +1,57 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: grafana
+    env: dev
+  name: grafana
+  namespace: observe
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: grafana
+      env: dev
+  template:
+    metadata:
+      labels:
+        app: grafana
+        env: dev
+    spec:
+      automountServiceAccountToken: false
+      containers:
+      - image: grafana/grafana:9.0.7
+        name: grafana
+        ports:
+        - containerPort: 3000
+          name: http
+        readinessProbe:
+          httpGet:
+            path: /api/health
+            port: http
+        resources:
+          limits:
+            cpu: 200m
+            memory: 200Mi
+          requests:
+            cpu: 100m
+            memory: 100Mi
+        volumeMounts:
+        - mountPath: /var/lib/grafana
+          name: grafana-pv
+        - mountPath: /etc/grafana/provisioning/datasources
+          name: grafana-datasources
+          readOnly: false
+        - mountPath: /etc/grafana
+          name: grafana-config
+          readOnly: false
+      volumes:
+      - name: grafana-datasources
+        secret:
+          secretName: grafana-datasources
+      - name: grafana-config
+        secret:
+          secretName: grafana-config
+      - name: grafana-pv
+        persistentVolumeClaim:
+          claimName: grafana-pvc

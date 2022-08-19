@@ -1,0 +1,28 @@
+apiVersion: monitoring.coreos.com/v1
+kind: Prometheus
+metadata:
+  name: prometheus
+  namespace: observe
+  labels:
+    app: prometheus-stack
+    env: dev
+spec:
+  image: quay.io/prometheus/prometheus:v2.38.0
+  nodeSelector:
+    kubernetes.io/os: linux
+  replicas: 2
+  resources:
+    requests:
+      memory: 400Mi
+  portName: http-web
+  podMetadata: 
+    labels:
+      app: prometheus-stack
+      env: dev
+  scrapeInterval: 30s
+  scrapeTimeout: 30s
+  serviceAccountName: prometheus
+  version: v2.38.0
+  serviceMonitorNamespaceSelector: {}
+  serviceMonitorSelector: {}
+  podMonitorSelector: {}

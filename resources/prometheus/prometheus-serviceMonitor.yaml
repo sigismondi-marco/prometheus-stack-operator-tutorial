@@ -1,0 +1,16 @@
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: prometheus-self
+  namespace: observe
+  labels:
+    app: prometheus-stack
+    env: dev
+spec:
+  endpoints:
+  - port: http-web
+  selector:
+    matchLabels:
+      operated-prometheus: "true"
+  namespaceSelector:
+    any: true

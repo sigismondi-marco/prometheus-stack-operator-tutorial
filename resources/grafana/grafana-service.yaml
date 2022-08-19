@@ -1,0 +1,18 @@
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: grafana
+    env: dev
+    operated-prometheus: "true"
+  name: grafana
+  namespace: observe
+spec:
+  ports:
+  - name: http
+    port: 3000
+    targetPort: http
+  selector:
+    app: grafana
+    env: dev
+  type: NodePort
