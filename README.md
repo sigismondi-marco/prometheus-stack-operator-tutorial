@@ -1,10 +1,4 @@
-# Studies on the Prometheus monitor stack on kubernetes using its Operator
-
-# 1 Introduction
-
-[TO DO]
-
-## 1.1 The environment
+## 1 The environment
 
 This is the starting environment setup where I built the cluster. I used minikube on windows.
 
@@ -47,11 +41,7 @@ Kustomize Version: v4.5.4
 Server Version: v1.24.3
 ```
 
-# 2 The Prometheus Operator
-
-[TO DO]
-
-# 2.1 Installing the operator
+# 2 Installing the operator
 
 First thing we need is to download the bundle containing all Custom resources and custom resource definitions needed from the official github [repo](https://github.com/prometheus-operator/prometheus-operator)
 
@@ -131,11 +121,7 @@ service/prometheus-operator created
 
 Now the Operator is configured and we can start applyingdeploying the actual prometheus cluster by creating the custom resoucrces instances
   
-# 2 Prometheus stack
-
-[TO DO]
-  
-# 2.1 Deploying the prometheus stack
+# 2 Deploy the prometheus stack
 
 Before to create the Prometheus instance we need to create some RBAC objects to grant the pods the right access to other cluster's resources:
 1. serviceAccount
@@ -366,12 +352,12 @@ http://127.0.0.1:[PORT]
 
 and then opening the url in a browser
 
-![Prometheus!](/img/1.prometheus.jpg)
+![prometheus!](/img/1.prometheus.jpg)
 *Finally Prometheus*
 
 One last thing is missing: something to monitor and since Prometheus itself expose metrics the first thing we can do is configure it to monitor itself.
 
-![Prometheus!](/img/2.prometheus-no-targets.jpg)
+![prometheus-no-targets!](/img/2.prometheus-no-targets.jpg)
 *No target, no metrics*
 
 First of all we create our second custom resource: the ServiceMonitor
@@ -425,16 +411,12 @@ http://127.0.0.1:[PORT]
 
 and open the browser
 
-![Prometheus!](/img/3.prometheus-targets.jpg)
+![prometheus-targets!](/img/3.prometheus-targets.jpg)
 *Finally some targets*
 
 > **_Note:_** Be patient sometimes the operator takes some times (even minutes) to update its configuration
 
-# 3 Grafana
-
-[TO DO]
-
-## 3.1 Deploy Grafana
+# 3 Deploy Grafana
 
 Fist of all we need to setup some configuration
 
@@ -702,9 +684,7 @@ In this screenshot a lot of interesting things confirm us that we are watching P
 1. Prometheus shown in as Data source
 2. the promql query `rate(prometheus_http_request_duration_seconds_count{}[5m])` executed on Prometheus metric
 
-# 4 Prometheus as metric scraper
-
-## 4.1 Configure Prometheus for Grafana monitoring
+# 4 Configure Prometheus for Grafana monitoring
 
 Fisrt of all we need to add to `grafana` service the label we decided must be selected for monitoring `operated-prometheus: "true"`
 
@@ -782,15 +762,11 @@ http://127.0.0.1:[PORT]
 ![prometheus-all-targets!](/img/6.prometheus-all-targets.jpg)
 *Grafana being scraped by Prometheus*
 
-# 5 Conclusion
-
-[TO DO]
-
-# 6 Bonus
+# 5 Bonus
 
 THe following are some of my favorite tecnique for troubleshooting
 
-## 6.1 Fire and forget pod
+## 5.1 Fire and forget pod
 
 ```
 
@@ -811,7 +787,7 @@ pod "busybox" deleted
 
 It creates a pod but due to the `--rm` flag it is delete after executed (in the case of `sh` after exit the shell)
 
-## 6.2 Impersonification
+## 5.2 Impersonification
 
 ```
 $ kubectl auth can-i list pod --as system:serviceaccount:observe:prometheus
@@ -822,10 +798,3 @@ no
 ```
 
 It allow you to check if RBAC object are created properly by impersonificate user or even service account and check grants on objects
-
-Usefull links:
-
-docs: https://prometheus-operator.dev/docs/operator/design/
-tutorial: https://grafana.com/docs/grafana-cloud/kubernetes-monitoring/prometheus/prometheus_operator/
-repo: https://github.com/prometheus-operator/prometheus-operator
-https://blog.container-solutions.com/prometheus-operator-beginners-guide
